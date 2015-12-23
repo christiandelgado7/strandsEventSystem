@@ -109,4 +109,21 @@ public class DefaultEventManagerTest
         {
         }
     }
+
+    /**
+     * Receiving an Event only notifies the Listener registered for such Event,
+     * any other registered Listener shouldn't be notified by this Event
+     */
+    @Test
+    public void testReceiveEventFromDifferentListeners() {
+        EventListenerMock eventListenerMock = new EventListenerMock(new Class[]{SimpleEvent.class});
+        EventListenerMock eventListenerMock2 = new EventListenerMock(new Class[]{SubEvent.class});
+        eventManager.registerListener("some.key", eventListenerMock);
+        eventManager.registerListener("another.key", eventListenerMock2);
+        eventManager.publishEvent(new SubEvent(this));
+
+        assertFalse(eventListenerMock.isCalled());
+        assertTrue(eventListenerMock2.isCalled());
+
+    }
 }
