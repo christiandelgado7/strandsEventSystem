@@ -33,12 +33,11 @@ public class DefaultEventManager implements EventManager
     private Collection calculateListeners(Class eventClass)
     {
         Collection listenersToWatch = new ArrayList();
-        Collection listenerForClass = (Collection) listenersByClass.get(eventClass);
-        Collection listenerForAll = (Collection) listenersByClass.get(null);
-        if (listenerForAll != null)
-            listenersToWatch.addAll(listenerForAll);
-        if (listenerForClass != null)
-            listenersToWatch.addAll(listenerForClass);
+        for (Object key : listenersByClass.keySet()) {
+            Class listenerClass = (Class) key;
+            if (listenerClass == null || listenerClass.isAssignableFrom(eventClass))
+                listenersToWatch.addAll((Collection) listenersByClass.get(listenerClass));
+        }
         return listenersToWatch;
     }
 
