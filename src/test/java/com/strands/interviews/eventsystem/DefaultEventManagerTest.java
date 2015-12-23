@@ -126,4 +126,16 @@ public class DefaultEventManagerTest
         assertTrue(eventListenerMock2.isCalled());
 
     }
+
+    /**
+     * If a Listener with Empty HandledEventClasses is registered, this Listener listen all the Events in the system
+     */
+    @Test
+    public void testListenersForAllEvents() {
+        EventListenerMock eventListenerMock = new EventListenerMock(new Class[]{});
+        eventManager.registerListener("some.key", eventListenerMock);
+        eventManager.publishEvent(new SimpleEvent(this));
+
+        assertTrue(eventListenerMock.isCalled());
+    }
 }

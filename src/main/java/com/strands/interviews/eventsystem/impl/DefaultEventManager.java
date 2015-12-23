@@ -32,7 +32,14 @@ public class DefaultEventManager implements EventManager
 
     private Collection calculateListeners(Class eventClass)
     {
-        return (Collection) listenersByClass.get(eventClass);
+        Collection listenersToWatch = new ArrayList();
+        Collection listenerForClass = (Collection) listenersByClass.get(eventClass);
+        Collection listenerForAll = (Collection) listenersByClass.get(null);
+        if (listenerForAll != null)
+            listenersToWatch.addAll(listenerForAll);
+        if (listenerForClass != null)
+            listenersToWatch.addAll(listenerForClass);
+        return listenersToWatch;
     }
 
     public void registerListener(String listenerKey, InterviewEventListener listener)
@@ -48,8 +55,11 @@ public class DefaultEventManager implements EventManager
 
         Class[] classes = listener.getHandledEventClasses();
 
-        for (int i = 0; i < classes.length; i++)
-            addToListenerList(classes[i], listener);
+        if (classes == null || classes.length == 0)
+            addToListenerList(null, listener);
+        else
+            for (int i = 0; i < classes.length; i++)
+                addToListenerList(classes[i], listener);
 
         listeners.put(listenerKey, listener);
     }
